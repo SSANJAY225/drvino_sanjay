@@ -54,6 +54,13 @@ const AdminForm = () => {
   const [timing, setTiming] = useState('');
   const [duration, setDuration] = useState('');
 
+  const [treatment, settreatment] = useState([]);
+  const [treatmentdosage, settreatmentdosage] = useState('');
+  const [treatmentrout, settreatmentrout] = useState('');
+
+  const [editingPrescriptionIndex, setEditingPrescriptionIndex] = useState(null);
+  const [editingTreatmentIndex, setEditingTreatmentIndex] = useState(null);
+
   const handleVitalsChange = (e) => {
     const { name, value } = e.target;
     setVitals((prevVitals) => ({ ...prevVitals, [name]: value }));
@@ -66,6 +73,12 @@ const AdminForm = () => {
 
   const handleDeleteHistory = (history, setHistory, item) => {
     setHistory(history.filter((entry) => entry !== item));
+  };
+
+  const handleAddTreatment = () => {
+    settreatment([...treatment, { treatmentdosage, treatmentrout }]);
+    settreatmentdosage('');
+    settreatmentrout('');
   };
 
   const handleAddPrescription = () => {
@@ -86,10 +99,28 @@ const AdminForm = () => {
     if (!historyList.includes(newHistoryItem) && newHistoryItem.trim() !== '') {
       setHistoryList([...historyList, newHistoryItem]);
     }
-    setIsBirthHistoryListVisible(false)
-    setIsFamilyHistoryListVisible(false)
-    setIsSurgicalHistoryListVisible(false)
-    setIsOtherHistoryListVisible(false)
+    setIsBirthHistoryListVisible(false);
+    setIsFamilyHistoryListVisible(false);
+    setIsSurgicalHistoryListVisible(false);
+    setIsOtherHistoryListVisible(false);
+  };
+
+  const handleEditTreatment = (index) => {
+    const item = treatment[index];
+    settreatmentdosage(item.treatmentdosage);
+    settreatmentrout(item.treatmentrout);
+    setEditingTreatmentIndex(index);
+    handleDeleteHistory(treatment, settreatment, item);
+  };
+
+  const handleEditPrescription = (index) => {
+    const item = prescription[index];
+    setMedicine(item.medicine);
+    setDosage(item.dosage);
+    setTiming(item.timing);
+    setDuration(item.duration);
+    setEditingPrescriptionIndex(index);
+    handleDeleteHistory(prescription, setPrescription, item);
   };
 
   const handleSubmit = () => {
@@ -322,7 +353,36 @@ const AdminForm = () => {
           )}
         </div>
       </div>
-
+      <div>
+        <h5>Treatment Given</h5>
+        <table>
+          <thead>
+            <tr>
+              <th>Dosage</th>
+              <th>Rout of Aministration</th>
+              <th>Delete</th>
+              <th>Edit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {treatment.map((item,index)=>(
+              <tr key={index}>
+                <td>{item.treatmentdosage}</td>
+                <td>{item.treatmentrout}</td>
+                <td><button onClick={() => handleDeleteHistory(treatment, settreatment, item)}>Delete</button></td>
+                <td><button onClick={() => handleEditTreatment(index)}>Edit</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+          <input type="text" placeholder="Dosage" value={treatmentdosage} onChange={(e) => settreatmentdosage(e.target.value)} required />
+          <input type="text" placeholder="rout of Aministarion" value={treatmentrout} onChange={(e) => settreatmentrout(e.target.value)} required />
+        </div>
+        <div>
+          <button onClick={handleAddTreatment}>Add Treatment</button>
+        </div>
+      </div>
       <div>
         <h5>Prescription</h5>
         <table>
@@ -332,6 +392,8 @@ const AdminForm = () => {
               <th>Dosage</th>
               <th>Timing</th>
               <th>Duration</th>
+              <th>Delete</th>
+              <th>Edit</th>
             </tr>
           </thead>
           <tbody>
@@ -341,6 +403,8 @@ const AdminForm = () => {
                 <td>{item.dosage}</td>
                 <td>{item.timing}</td>
                 <td>{item.duration}</td>
+                <td><button onClick={() => handleDeleteHistory(prescription, setPrescription, item)}>Delete</button></td>
+                <td><button onClick={()=>handleEditPrescription(index)}>Edit</button></td>
               </tr>
             ))}   
           </tbody>
@@ -356,9 +420,8 @@ const AdminForm = () => {
         </div>
       </div>
       <div className='title'>
+        <button onClick={handleSubmit}>Save</button>
         <button>Generate prescription</button>
-
-
         <button>Test Report Requirement</button>
       </div>
     </div>
