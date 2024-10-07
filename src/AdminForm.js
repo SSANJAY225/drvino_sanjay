@@ -20,6 +20,8 @@ const AdminForm = () => {
   const [birthHistory, setBirthHistory] = useState(['Diabetes', 'Sugar']);
   const [surgicalHistory, setSurgicalHistory] = useState(['Diabetes', 'Sugar']);
   const [otherHistory, setOtherHistory] = useState(['Diabetes', 'Sugar']);
+  const [followupdate,setfollowupdate]=useState('')
+  const [advicegiven,setadvicegiven]=useState('')
 
   const [examination, setExamination] = useState({
     conscious: false,
@@ -135,11 +137,15 @@ const AdminForm = () => {
       additionalTests,
       dynamicOnExaminations,
       dynamicSystematic,
+      followupdate,
+      advicegiven
+
     };
     console.log(formData);
   };
 
   return (
+    <>
     <div className="scrollable-container">
       <h5 className="title">Vitals - Doctor/Nurse</h5>
       <div className="vitals-container">
@@ -353,6 +359,16 @@ const AdminForm = () => {
           )}
         </div>
       </div>
+
+      <div>
+        <div>
+          <h5>Local Examination</h5>
+          <textarea placeholder='Type....'/>
+        </div>
+        <p>Dignosis</p>
+        <textarea style={{width:'300px'}}placeholder='Type'/>
+      </div>
+
       <div>
         <h5>Treatment Given</h5>
         <table>
@@ -419,12 +435,23 @@ const AdminForm = () => {
           <button onClick={handleAddPrescription}>Add Prescription</button>
         </div>
       </div>
-      <div className='title'>
-        <button onClick={handleSubmit}>Save</button>
-        <button>Generate prescription</button>
-        <button>Test Report Requirement</button>
+      <div style={{display:'flex', justifyContent: 'space-between'}}>
+        <div>
+          <label>Follow Up Date: </label>
+          <input type='date' onChange={(e)=>setfollowupdate(e.target.value)}/>
+        </div>
+        <div>
+          <lable>Advice Given</lable>
+          <textarea placeholder='Type...' style={{width:'300px'}} onChange={(e) => setadvicegiven(e.target.value)}/>
+        </div>
       </div>
     </div>
+    <div className='title' style={{marginTop:'50px'}}>
+    <button onClick={handleSubmit}>Save</button>
+    <button>Generate prescription</button>
+    <button>Test Report Requirement</button>
+  </div>
+  </>
   );
 };
 
