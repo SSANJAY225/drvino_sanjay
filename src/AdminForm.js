@@ -20,7 +20,7 @@ const AdminForm = () => {
   const [birthHistory, setBirthHistory] = useState(['Diabetes', 'Sugar']);
   const [surgicalHistory, setSurgicalHistory] = useState(['Diabetes', 'Sugar']);
   const [otherHistory, setOtherHistory] = useState(['Diabetes', 'Sugar']);
-  
+
   const [examination, setExamination] = useState({
     conscious: false,
     oriented: false,
@@ -36,10 +36,13 @@ const AdminForm = () => {
   const systematic = ['s1s2', 'blae'];
   const availableTests = ['X-Ray', 'MRI', 'Blood Test', 'Urine Test'];
 
-  // Manage dynamic addition of items
   const [isTestListVisible, setIsTestListVisible] = useState(false);
   const [isOnExamListVisible, setIsOnExamListVisible] = useState(false);
   const [isSystematicListVisible, setIsSystematicListVisible] = useState(false);
+  const [isFamilyHistoryListVisible, setIsFamilyHistoryListVisible] = useState(false);
+  const [isBirthHistoryListVisible, setIsBirthHistoryListVisible] = useState(false);
+  const [isSurgicalHistoryListVisible, setIsSurgicalHistoryListVisible] = useState(false);
+  const [isOtherHistoryListVisible, setIsOtherHistoryListVisible] = useState(false);
 
   const [dynamicOnExaminations, setDynamicOnExaminations] = useState([]);
   const [dynamicSystematic, setDynamicSystematic] = useState([]);
@@ -74,10 +77,19 @@ const AdminForm = () => {
   };
 
   const handleAddItem = (item, setDynamicList, dynamicList) => {
-    // Add item if it's not already added
     if (!dynamicList.includes(item)) {
       setDynamicList([...dynamicList, item]);
     }
+  };
+
+  const handleAddHistoryItem = (newHistoryItem, historyList, setHistoryList) => {
+    if (!historyList.includes(newHistoryItem) && newHistoryItem.trim() !== '') {
+      setHistoryList([...historyList, newHistoryItem]);
+    }
+    setIsBirthHistoryListVisible(false)
+    setIsFamilyHistoryListVisible(false)
+    setIsSurgicalHistoryListVisible(false)
+    setIsOtherHistoryListVisible(false)
   };
 
   const handleSubmit = () => {
@@ -89,7 +101,7 @@ const AdminForm = () => {
       surgicalHistory,
       otherHistory,
       examination,
-      additionalTests, // Include additional tests in submission
+      additionalTests,
       dynamicOnExaminations,
       dynamicSystematic,
     };
@@ -117,7 +129,7 @@ const AdminForm = () => {
       </div>
 
       <div className="vitals-container">
-        {/* Existing Vitals fields */}
+        {/* History Sections with + buttons */}
         <div>
           <h5 className="title">Family History</h5>
           <table>
@@ -130,6 +142,16 @@ const AdminForm = () => {
               ))}
             </tbody>
           </table>
+          <a href="#" onClick={() => setIsFamilyHistoryListVisible(!isFamilyHistoryListVisible)}>+</a>
+          {isFamilyHistoryListVisible && (
+            <input
+              type="text"
+              placeholder="Add Family History"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleAddHistoryItem(e.target.value, familyHistory, setFamilyHistory);
+              }}
+            />
+          )}
         </div>
         <div>
           <h5>Birth History</h5>
@@ -143,9 +165,19 @@ const AdminForm = () => {
               ))}
             </tbody>
           </table>
+          <a href="#" onClick={() => setIsBirthHistoryListVisible(!isBirthHistoryListVisible)}>+</a>
+          {isBirthHistoryListVisible && (
+            <input
+              type="text"
+              placeholder="Add Birth History"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleAddHistoryItem(e.target.value, birthHistory, setBirthHistory);
+              }}
+            />
+          )}
         </div>
         <div>
-          <h5>Surgical history</h5>
+          <h5>Surgical History</h5>
           <table>
             <tbody>
               {surgicalHistory.map((item, index) => (
@@ -156,19 +188,39 @@ const AdminForm = () => {
               ))}
             </tbody>
           </table>
+          <a href="#" onClick={() => setIsSurgicalHistoryListVisible(!isSurgicalHistoryListVisible)}>+</a>
+          {isSurgicalHistoryListVisible && (
+            <input
+              type="text"
+              placeholder="Add Surgical History"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleAddHistoryItem(e.target.value, surgicalHistory, setSurgicalHistory);
+              }}
+            />
+          )}
         </div>
         <div>
           <h5>Any Other History</h5>
           <table>
             <tbody>
-              {otherHistory.map((item, index) => (
+              {otherHistory.map((item,index)=>(
                 <tr key={index}>
                   <td>{item}</td>
-                  <td><button onClick={() => handleDeleteHistory(otherHistory, setOtherHistory, item)}>Delete</button></td>
+                  <td><button onClick={()=>handleDeleteHistory(otherHistory,setOtherHistory,item)}>Delete</button></td>
                 </tr>
               ))}
             </tbody>
           </table>
+          <a href='#' onClick={()=>setIsOtherHistoryListVisible(!isOtherHistoryListVisible)}>+</a>
+          {
+            isOtherHistoryListVisible &&(
+              <input 
+              type="text"
+              placeholder='Add Other History'
+              onKeyDown={(e)=>{
+                if(e.key==='Enter')handleAddHistoryItem(e.target.value,otherHistory,setOtherHistory)
+              }} />
+            )}
         </div>
       </div>
 
